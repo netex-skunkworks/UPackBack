@@ -1,0 +1,59 @@
+@startuml
+
+[*] -down-> Join
+[*] -down-> Login
+Logout -up-> [*]
+
+Join : UserData
+Join -left-> Login
+
+Login : UserID
+Login --> Main
+
+Main : Map
+Main : Menu
+Main -up-> Logout
+Main -down--> Supplier
+Main -down--> PendingList
+Main -down--> Delivery
+Main -up--> Account
+
+Account : Balance
+Account : Rating
+Account : <List> Review
+
+Supplier : <List> AvailablePackage
+Supplier -up-> Main
+Supplier -down--> AvailablePackage
+
+PendingList : <List> PendingPackage
+PendingList -up-> Main
+PendingList -down--> PendingPackage
+
+Delivery : <List> PickedPackage
+Delivery -up-> Main
+Delivery -down--> PickedPackage
+
+AvailablePackage : PackageDetails
+AvailablePackage -up-> Supplier
+AvailablePackage -down-> Accept
+
+PendingPackage : PackageDetails
+PendingPackage -up-> PendingList
+PendingPackage -down-> Cancel
+PendingPackage -down-> Pickup
+
+PickedPackage : PackageDetails
+PickedPackage -up-> Delivery
+PickedPackage -down->Drop
+
+Drop -up-> Delivery
+
+Pickup -up-> Delivery
+
+Accept -up-> Supplier
+Accept -up-> PendingList
+
+Cancel -up-> Supplier
+
+@enduml

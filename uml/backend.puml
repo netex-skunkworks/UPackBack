@@ -1,0 +1,68 @@
+@startuml
+
+class Courier {
+    String ID
+    String fullname
+    Point location
+    double Balance
+    <List>Package pending
+    <List>Package delivery
+    void login()
+}
+
+class Supplier {
+    String ID
+    String fullname
+    Address address
+    <List>Package packages
+}
+
+class Customer {
+    String ID
+    Address address
+}
+
+class Package {
+    String ID
+    Supplier supplier
+    Customer customer
+    Volume vol
+    double weight
+    double price
+    void changeStatus()
+}
+
+class Address {
+    Point location
+    String street
+    String number
+    String city
+    void setPoint()
+}
+
+class Volume {
+    double length
+    double width
+    double height
+    double calculateVolume()
+}
+
+enum PackageStatus {
+    AVAILABLE
+    ACCEPTED
+    ENROUTE
+    DELIVERED
+}
+
+Courier *-- Package
+Supplier *-- Package
+Package *-- Volume
+Package *-- PackageStatus
+Customer *-- Address
+Supplier *-- Address
+Package *-- Customer
+Package *-- Supplier
+
+
+
+@enduml
