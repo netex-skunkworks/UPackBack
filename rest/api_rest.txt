@@ -1,0 +1,10 @@
+GET www.upack.ro/get_suppliers.php
+GET www.upack.ro/get_packages.php?supplier_id=3
+GET www.upack.ro/get_package.php?id=123
+POST www.upack.ro/set_package_status.php?package_id=123&status=accept
+
+
+
+GET www.upack.ro/suppliers
+========================================================
+
