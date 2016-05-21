@@ -11,7 +11,6 @@ $status = isset($_GET['status']) ? strtolower($_GET['status']) : null;
 $result = getFromHBase('/package/*', ['supplier', 'customer', 'address', 'courier']);
 $size = count($result);
 
-
 foreach ($result as $res_key => $res_value) {
 
     if (strtolower($result[$res_key]['status']) != $status) {
