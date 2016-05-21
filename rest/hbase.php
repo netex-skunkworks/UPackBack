@@ -1,5 +1,13 @@
 <?php
 
+function getCourierPreferences($courierId) {
+    $result = getFromHBase('/preferences/'.$courierId);
+    if ( is_array($result) && count($result) > 0 ) {
+        return $result[0];
+    }
+    return false;  //  no preferences
+}
+
 function getFromHBase($url, $updateCols = array())
 {
     $curl = curl_init();
