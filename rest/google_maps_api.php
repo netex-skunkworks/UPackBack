@@ -28,6 +28,13 @@ function getDuration($data) {
     return $data['duration'];
 }
 
+function gapiCalculateViaDistance($origin, $via, $destination) {
+    return combineResultData(
+        gapiCalculateDistance($origin, $via),
+        gapiCalculateDistance($via, $destination)
+    );
+}
+
 function gapiCalculateDistance($origin, $destination) {
     $result = curlRequest(getGoogleAPIUrl(
         GOOGLE_API_URL,
@@ -43,6 +50,18 @@ function gapiCalculateDistance($origin, $destination) {
         return translateResultData($result);
     }
     return false;  //  ERROR
+}
+
+function combineResultData($first, $second) {
+    $result = [
+        'addresses' => [
+            'origin' => $first['addresses']['origin'],
+            'destination' => $second['addresses']['destination'],
+        ],
+        'distance' => $first['distance'] + $second['distance'],
+        'duration' => $first['duration'] + $second['duration']
+    ];
+    return $result;
 }
 
 function translateResultData($data) {
