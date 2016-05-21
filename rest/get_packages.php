@@ -11,7 +11,9 @@ $status = isset($_GET['status']) ? strtolower($_GET['status']) : null;
 $result = getFromHBase('/package/*', ['supplier', 'customer', 'address', 'courier']);
 $size = count($result);
 
+
 foreach ($result as $res_key => $res_value) {
+
     if (strtolower($result[$res_key]['status']) != $status) {
         unset($result[$res_key]);
     } else if ($supplierId) {
@@ -28,4 +30,4 @@ foreach ($result as $res_key => $res_value) {
 }
 
 
-echo json_encode($result, JSON_PRETTY_PRINT);
+echo json_encode(array_values($result), JSON_PRETTY_PRINT);
