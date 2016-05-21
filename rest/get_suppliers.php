@@ -7,12 +7,12 @@ require_once __DIR__ . '/google_maps_api.php';
 
 $result = getFromHBase('/supplier/*', ['address']);
 
-$courierPosition = isset($_GET['position']) ? $_GET['position'] : false ;
+$courierId = isset($_GET['position']) ? $_GET['position'] : false ;
+$courierPosition = isset($_GET['courier_id']) ? $_GET['courier_id'] : false ;
 
-if ( isset($courierPosition) ) {
+if ( isset($courierId) && isset($courierPosition) ) {
+    $prefs = getCourierPreferences($courierId);
     foreach ($result as $key => $res_value) {
-        $supplierId = $res_value['id'];
-        $prefs = getSupplierPreferences($supplierId);
         $checkRange = gapiCalculateDistance(
             explode(',', $courierPosition),
             [$res_value['address']['lat'], $res_value['address']['lng']]
@@ -26,8 +26,8 @@ if ( isset($courierPosition) ) {
 
 echo json_encode($result);
 
-function getSupplierPreferences($supplierId) {
-    $result = getFromHBase('/preferences/'.$supplierId);
+function getCourierPreferences($courierId) {
+    $result = getFromHBase('/preferences/'.$courierId);
     if ( is_array($result) && count($result) > 0 ) {
         return $result[0];
     }
