@@ -7,8 +7,8 @@ require_once __DIR__ . '/google_maps_api.php';
 
 $result = getFromHBase('/supplier/*', ['address']);
 
-$courierId = isset($_GET['position']) ? $_GET['position'] : false ;
-$courierPosition = isset($_GET['courier_id']) ? $_GET['courier_id'] : false ;
+$courierPosition = isset($_GET['position']) ? $_GET['position'] : false ;
+$courierId = isset($_GET['courier_id']) ? $_GET['courier_id'] : false ;
 
 if ( isset($courierId) && isset($courierPosition) ) {
     $prefs = getCourierPreferences($courierId);
