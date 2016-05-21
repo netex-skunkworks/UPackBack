@@ -23,6 +23,7 @@ function getFromHBase($url, $updateCols = array()) {
             }
         }
     }
+
     return $result;
 }
 
@@ -53,5 +54,3 @@ function getColumnName($addressValue) {
 function getVal($data, $key) {
     return base64_decode($data[$key]);
 }
-
-?>
