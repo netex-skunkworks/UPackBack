@@ -2,31 +2,59 @@
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/hbase.php';
+require_once __DIR__ . '/google_maps_api.php';
 
-$supplierId = isset($_GET['supplier_id']) ? $_GET['supplier_id'] : null;
 $courierId = isset($_GET['courier_id']) ? $_GET['courier_id'] : null;
-$packageId = isset($_GET['package_id']) ? $_GET['package_id'] : null;
 $status = isset($_GET['status']) ? strtolower($_GET['status']) : null;
 
+//  mandatory parameters
+if ( empty($courierId) || empty($status) ) {
+    echo json_encode(array(), JSON_PRETTY_PRINT);
+    die();
+}
+
+$courierPosition = isset($_GET['position']) ? $_GET['position'] : false ;
+
+if ( ! empty($courierPosition) ) {
+    $prefs = getCourierPreferences($courierId);
+} else {
+    $prefs = false;
+}
+
 $result = getFromHBase('/package/*', ['supplier', 'customer', 'address', 'courier']);
-$size = count($result);
 
 foreach ($result as $res_key => $res_value) {
 
-    if (strtolower($result[$res_key]['status']) != $status) {
-        unset($result[$res_key]);
-    } else if ($supplierId) {
-        if ($result[$res_key]['supplier']['id'] != $supplierId) {
-            unset($result[$res_key]);
+    if ( strtolower($res_value['status']) != $status ) {
+        removeItem($result, $res_key);  //  filter non-matched packages by status
+    } elseif ( $status == 'available' ) {
+
+        //  filter by courier - supplier - package range
+        if ( ! empty($prefs) ) {
+            $origin = explode(',', $courierPosition);
+            $via = [
+                $res_value['supplier']['address']['lat'],
+                $res_value['supplier']['address']['lng']
+            ];
+            $destination = [
+                $res_value['customer']['address']['lat'],
+                $res_value['customer']['address']['lng']
+            ];
+            $maxDistance = $prefs['delivery_distance'];
+            $maxDuration = $prefs['delivery_duration'];
+            $checkRange = gapiCalculateViaDistance($origin, $via, $destination);
+            if ( is_array($checkRange) ) {
+                checkAndFilterIfNotInRange($result, $res_key, getDistance($checkRange), $maxDistance);
+                checkAndFilterIfNotInRange($result, $res_key, getDuration($checkRange), $maxDuration);
+            }
         }
-    } else if ($courierId) {
-        if (array_key_exists('courier', $result[$res_key]) && $result[$res_key]['courier']['id'] != $courierId) {
-            unset($result[$res_key]);
-        } else if (array_key_exists('courier_id', $result[$res_key])) {
-            unset($result[$res_key]);
-        }
+    } elseif ( !isset($res_value['courier']) ) {
+        removeItem($result, $res_key);  //  filter package with non associated courier
+    } elseif ( !isset($res_value['courier']['id']) ) {
+        removeItem($result, $res_key);  //  filter package with non associated courier
+    } elseif ( $res_value['courier']['id'] != $courierId ) {
+        removeItem($result, $res_key);  //  filter package associated to another courier
     }
 }
 
-
-echo json_encode(array_values($result), JSON_PRETTY_PRINT);
+echo json_encode(array_values($result));
