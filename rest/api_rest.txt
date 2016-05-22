@@ -1,7 +1,7 @@
 GET www.upack.ro/get_suppliers.php?position=45.785808,21.1881261&courier_id=3
 GET www.upack.ro/get_packages.php?supplier_id=3
 GET www.upack.ro/get_package.php?id=123
-POST www.upack.ro/set_package_status.php?package_id=123&status=accept&courier_id=XYZ
+POST www.upack.ro/set_package_status.php?package_id=123&status=accepted&courier_id=XYZ
 GET www.upack.ro/get_packages.php?courier_id=51&position=45.7566,21.214805&status=AVAILABLE
 
 
