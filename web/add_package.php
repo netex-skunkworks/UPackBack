@@ -41,8 +41,8 @@ function addAdress($data){
     $apiCallPart[] = '{"key":"' . base64_encode($address_id) . '", "Cell": [{"column":"' . base64_encode('a:street') . '", "$":"' . base64_encode($data['street']) . '"}]} ';
     $apiCallPart[] = '{"key":"' . base64_encode($address_id) . '", "Cell": [{"column":"' . base64_encode('a:number') . '", "$":"' . base64_encode($data['number']) . '"}]} ';
 
-   // $locationDetails = getLocationDetails($data);
-    $locationDetails = array("lat" => "45.73713", "lng" => "21.2184243");
+    $locationDetails = getLocationDetails($data);
+    //$locationDetails = array("lat" => "45.73713", "lng" => "21.2184243");
     $apiCallPart[] = '{"key":"' . base64_encode($address_id) . '", "Cell": [{"column":"' . base64_encode('a:lat') . '", "$":"' . base64_encode($locationDetails['lat']) . '"}]} ';
     $apiCallPart[] = '{"key":"' . base64_encode($address_id) . '", "Cell": [{"column":"' . base64_encode('a:lng') . '", "$":"' . base64_encode($locationDetails['lng']) . '"}]} ';
 
