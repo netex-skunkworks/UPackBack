@@ -26,4 +26,4 @@ if ( isset($courierId) && isset($courierPosition) ) {
     }
 }
 
-echo json_encode($result);
+echo json_encode(array_values($result));
