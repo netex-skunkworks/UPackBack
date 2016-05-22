@@ -42,10 +42,19 @@ foreach ($result as $res_key => $res_value) {
             ];
             $maxDistance = $prefs['delivery_distance'];
             $maxDuration = $prefs['delivery_duration'];
-            $checkRange = gapiCalculateViaDistance($origin, $via, $destination);
+
+            $checkSupplier = gapiCalculateDistance($origin, $via);
+            $checkDelivery = gapiCalculateDistance($via, $destination);
+            $checkRange = combineResultData($checkSupplier, $checkDelivery);
+
             if ( is_array($checkRange) ) {
                 checkAndFilterIfNotInRange($result, $res_key, getDistance($checkRange), $maxDistance);
                 checkAndFilterIfNotInRange($result, $res_key, getDuration($checkRange), $maxDuration);
+            }
+
+            //  add delivery estimation description
+            if ( isset($result[$res_key]) ) {
+                $result[$res_key]['delivery_description'] = $checkDelivery['description'];
             }
         }
     } elseif ( !isset($res_value['courier']) ) {
